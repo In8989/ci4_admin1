@@ -9,7 +9,6 @@ class MemberModel extends BaseModel
     //protected $updatedField  = 'mem_updated_at';
     //protected $deletedField  = 'mem_deleted_at';
 
-
     protected $table = 'my_member';
     protected $prefix = 'mem';
     protected $allowedFields = ['mem_id', 'mem_pass', 'mem_name', 'mem_tel', 'mem_email',

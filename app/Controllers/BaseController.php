@@ -28,11 +28,15 @@ class BaseController extends Controller
      * @var array
      */
     protected $helpers = ['common','alert'];
+    protected $models = [];
 
     protected $validation;
-    //  모델 변수
+
+    // 첫번째 모델용 공통 변수
     protected $model;
-    protected $memberModel;
+
+    // 첫번째 모델의 주키 공통 변수
+    protected $primaryKey = "";
 
     /**
      * Constructor.
@@ -45,18 +49,27 @@ class BaseController extends Controller
     {
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
-
-        //--------------------------------------------------------------------
-        // Preload any models, libraries, etc, here.
-        //--------------------------------------------------------------------
-        // E.g.: $this->session = \Config\Services::session();
     }
 
     public function __construct()
     {
-        $this->validation = \Config\Services::validation();
+        //--------------------------------------------------------------------
+        // Preload any models, libraries, etc, here.
+        //--------------------------------------------------------------------
+        // E.g.: $this->session = \Config\Services::session();
+
+        // Load Validation
+        //$this->validation = \Config\Services::validation();
+
         //  Load Model
-        $this->memberModel = model('App\Models\MemberModel');
+        foreach ($this->models as $key => $model) {
+            $this->$model = model("App\Models\\{$model}");
+            if ($key == 0) {
+                $this->model = $this->$model;   // 0 번째 기번 모듈로 (컨트롤러에서 첫 번째 models 배열에 넣은 데이터
+                $this->primaryKey = $this->model->primaryKey;
+            }
+        }
+
     }
 
     public function run($path, $params=array())
