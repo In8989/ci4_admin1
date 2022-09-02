@@ -4,11 +4,11 @@
         <!-- Content -->
 
         <div class="container-xxl flex-grow-1 container-p-y">
-            <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Member /</span> List</h4>
+            <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Company /</span> List</h4>
 
             <!-- Basic Bootstrap Table -->
             <div class="card">
-                <h5 class="card-header">Member List</h5>
+                <h5 class="card-header">Company List</h5>
                 <div class="table-responsive text-nowrap">
                     <table class="table">
                         <thead>
@@ -24,23 +24,20 @@
                         <tbody class="table-border-bottom-0">
                         <?php for ($i = 0; $i < count($list); $i++) { ?>
                             <tr>
-                                <td><?php echo $list[$i]['mem_id'] ?></td>
-                                <td><?php echo $list[$i]['mem_name'] ?></td>
-                                <td><?php echo $list[$i]['mem_tel'] ?></td>
-                                <td><?php echo $list[$i]['mem_email'] ?></td>
-                                <td><?php echo $list[$i]['mem_created_at'] ?></td>
+                                <td><?php echo $list[$i]['com_id'] ?></td>
+                                <td><?php echo $list[$i]['com_name'] ?></td>
+                                <td><?php echo $list[$i]['com_tel'] ?></td>
+                                <td><?php echo $list[$i]['com_email'] ?></td>
+                                <td><?php echo $list[$i]['com_created_at'] ?></td>
+
                                 <td>
                                     <div class="dropdown">
                                         <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
                                             <i class="bx bx-dots-vertical-rounded"></i>
                                         </button>
                                         <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="./member/edit?idx=<?php echo $list[$i]['mem_idx'] ?>"
-                                            ><i class="bx bx-edit-alt me-1"></i> Edit</a
-                                            >
-                                            <a class="dropdown-item" href="./member/delete?idx=<?php echo $list[$i]['mem_idx'] ?>"
-                                            ><i class="bx bx-trash me-1"></i> Delete</a
-                                            >
+                                            <a class="dropdown-item" href="<?php echo $currentURL ?>/edit?idx=<?php echo $list[$i][$primaryKey] ?>"><i class="bx bx-edit-alt me-1"></i> Edit</a>
+                                            <a class="dropdown-item" href="<?php echo $currentURL ?>/delete?idx=<?php echo $list[$i][$primaryKey] ?>"><i class="bx bx-trash me-1"></i> Delete</a>
                                         </div>
                                     </div>
                                 </td>
@@ -53,9 +50,9 @@
             </div>
 
             <div class="pageNavion">
-                <?= $pager ?>
+                <?= $links ?>
             </div>
-            <a href="/master/member/edit"><button type="button">추가</button></a>
+            <a href="<?php echo $currentURL ?>/edit"><button type="button">추가</button></a>
             <!--/ Basic Bootstrap Table -->
 
         </div>

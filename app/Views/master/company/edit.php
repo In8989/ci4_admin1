@@ -8,48 +8,48 @@
                     <div class="card-body">
                         <!-- Logo -->
                         <div class="app-brand justify-content-center">
-                            <span class="app-brand-text demo text-body fw-bolder">member</span>
+                            <span class="app-brand-text demo text-body fw-bolder">Company</span>
                         </div>
                         <!-- /Logo -->
                         <form method="POST" enctype="multipart/form-data" id="formAuthentication" class="mb-3">
-                            <input type="hidden" name="mem_idx" id="mem_idx" value="<?php echo $idx?>">
+                            <input type="hidden" name="<?php echo $primaryKey ?>" id="<?php echo $primaryKey ?>" value="<?php echo $idx?>">
                             <div class="mb-3">
-                                <label for="mem_id" class="form-label">ID</label>
-                                <input type="text" class="form-control" id="mem_id" name="mem_id" placeholder="Enter your id" autofocus value="<?php echo $mem_id ?>" />
+                                <label for="com_id" class="form-label">ID</label>
+                                <input type="text" class="form-control" id="com_id" name="com_id" placeholder="Enter your id" autofocus value="<?php echo $com_id ?>" />
                             </div>
                             <div class="mb-3 form-password-toggle">
-                                <label class="form-label" for="mem_pass">Password</label>
+                                <label class="form-label" for="com_pass">Password</label>
                                 <div class="input-group input-group-merge">
                                     <input
                                             type="password"
-                                            id="mem_pass"
+                                            id="com_pass"
                                             class="form-control"
-                                            name="mem_pass"
+                                            name="com_pass"
                                             placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                                             aria-describedby="password"
-                                            value="<?php echo $mem_pass ?>"
+                                            value="<?php echo $com_pass ?>"
                                     />
                                     <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="mem_name" class="form-label">Username</label>
+                                <label for="com_name" class="form-label">Username</label>
                                 <input
                                         type="text"
                                         class="form-control"
-                                        id="mem_name"
-                                        name="mem_name"
+                                        id="com_name"
+                                        name="com_name"
                                         placeholder="Enter your username"
-                                        value="<?php echo $mem_name ?>"
+                                        value="<?php echo $com_name ?>"
                                 />
                             </div>
                             <div class="mb-3">
-                                <label for="mem_tel" class="form-label">TEL</label>
-                                <input type="text" class="form-control" id="mem_tel" name="mem_tel" placeholder="Enter your tel" value="<?php echo $mem_tel ?>" />
+                                <label for="com_tel" class="form-label">TEL</label>
+                                <input type="text" class="form-control" id="com_tel" name="com_tel" placeholder="Enter your tel" value="<?php echo $com_tel ?>" />
                             </div>
                             <div class="mb-3">
-                                <label for="mem_email" class="form-label">Email</label>
-                                <input type="text" class="form-control" id="mem_email" name="mem_email" placeholder="Enter your email" value="<?php echo $mem_email ?>" />
+                                <label for="com_email" class="form-label">Email</label>
+                                <input type="text" class="form-control" id="com_email" name="com_email" placeholder="Enter your email" value="<?php echo $com_email ?>" />
                             </div>
 
 

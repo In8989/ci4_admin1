@@ -8,11 +8,11 @@
                     <div class="card-body">
                         <!-- Logo -->
                         <div class="app-brand justify-content-center">
-                            <span class="app-brand-text demo text-body fw-bolder">member</span>
+                            <span class="app-brand-text demo text-body fw-bolder">Member</span>
                         </div>
                         <!-- /Logo -->
                         <form method="POST" enctype="multipart/form-data" id="formAuthentication" class="mb-3">
-                            <input type="hidden" name="mem_idx" id="mem_idx" value="<?php echo $idx?>">
+                            <input type="hidden" name="<?php echo $primaryKey ?>" id="<?php echo $primaryKey ?>" value="<?php echo $idx?>">
                             <div class="mb-3">
                                 <label for="mem_id" class="form-label">ID</label>
                                 <input type="text" class="form-control" id="mem_id" name="mem_id" placeholder="Enter your id" autofocus value="<?php echo $mem_id ?>" />
@@ -20,28 +20,13 @@
                             <div class="mb-3 form-password-toggle">
                                 <label class="form-label" for="mem_pass">Password</label>
                                 <div class="input-group input-group-merge">
-                                    <input
-                                            type="password"
-                                            id="mem_pass"
-                                            class="form-control"
-                                            name="mem_pass"
-                                            placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                                            aria-describedby="password"
-                                            value="<?php echo $mem_pass ?>"
-                                    />
+                                    <input type="password" id="mem_pass" class="form-control" name="mem_pass" placeholder="********" aria-describedby="password" value="<?php echo $mem_pass ?>" />
                                     <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label for="mem_name" class="form-label">Username</label>
-                                <input
-                                        type="text"
-                                        class="form-control"
-                                        id="mem_name"
-                                        name="mem_name"
-                                        placeholder="Enter your username"
-                                        value="<?php echo $mem_name ?>"
-                                />
+                                <input type="text" class="form-control" id="mem_name" name="mem_name" placeholder="Enter your username" value="<?php echo $mem_name ?>" />
                             </div>
                             <div class="mb-3">
                                 <label for="mem_tel" class="form-label">TEL</label>

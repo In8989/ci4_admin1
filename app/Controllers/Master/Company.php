@@ -2,37 +2,37 @@
 
 namespace App\Controllers\Master;
 
-use App\Controllers\BaseController;
+use App\Controllers\Master\MasterController;
 
-class Member extends BaseController
+class Company extends MasterController
 {
-    protected $models = ['MemberModel'];
+    protected $models = ['CompanyModel'];
+    protected $viewPath = '/master/company';
 
     public function index()
     {
         $page = $this->request->getGet('page') ?? 1;
-        $perPage = 5;
-        $list = $this->model->paginate($perPage);
+        $pager = $this->model->getPager();
 
-        $total = $this->model->pager->gettotal();
         $data = [
-            'list'  => $list,
-            'pager' => $this->model->pager->makeLinks($page, $perPage, $total),
+            'list'  => $pager['list'],
+            'links'  => $pager['links'],
+            'total_count'  => $pager['total_count'],
         ];
 
-        return $this->run('master/member/list', $data);
+        return $this->run($this->viewPath . '/list', $data);
     }
 
     public function edit()
     {
         $validate = $this->validate([
-            'mem_name' => [
+            'com_name' => [
                 'rules'  => 'required',
                 'errors' => ['required' => '이름을 입력해 주세요.'],
             ],
         ]);
 
-        if (!$validate) {
+        if (!$validate) {   // Form 출력
             $idx = $this->request->getGet('idx') ?? '';
 
             if ($idx) {
@@ -43,13 +43,14 @@ class Member extends BaseController
 
             $data['idx'] = $idx;
 
-            return $this->run('master/member/edit', $data);
+            return $this->run($this->viewPath . '/edit', $data);
 
         } else if ($this->request->getMethod() == 'post') {
             $input = $this->request->getPost();
 
             if ($this->model->edit($input)) {
-                return redirect()->to('/master/member');
+
+                return redirect()->to($this->viewPath);
             } else {
                 alert("오류가 발생하였습니다.");
             }
@@ -57,17 +58,5 @@ class Member extends BaseController
 
     }
 
-    public function delete()
-    {
-        $idx = $this->request->getGet('idx');
-        $set = [
-            'mem_deleted_id' => 'admin',
-            'mem_deleted_ip' => $_SERVER["REMOTE_ADDR"],
-        ];
-        $this->model->update($idx, $set);
-        $this->model->delete($idx);
-
-        return redirect()->to('/master/member');
-    }
 
 }

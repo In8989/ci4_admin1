@@ -4,10 +4,6 @@ namespace App\Models;
 
 class MemberModel extends BaseModel
 {
-    //protected $primaryKey = 'mem_idx';
-    //protected $createdField  = 'mem_created_at';
-    //protected $updatedField  = 'mem_updated_at';
-    //protected $deletedField  = 'mem_deleted_at';
 
     protected $table = 'my_member';
     protected $prefix = 'mem';
@@ -17,5 +13,12 @@ class MemberModel extends BaseModel
                                 'mem_deleted_id', 'mem_deleted_ip', 'mem_deleted_at',];
 
 
+    function getAuthMember($input)
+    {
+        $this->where("mem_id", $input["mem_id"]);
+        $this->where("mem_pass", $input["mem_pass"]);
+
+        return $this->get()->getRowArray();
+    }
 
 }

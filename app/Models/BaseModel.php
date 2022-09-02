@@ -1,28 +1,44 @@
 <?php
+
 namespace App\Models;
+
 use CodeIgniter\Model;
 
 class BaseModel extends Model
 {
-    protected $table      = '';
-    protected $prefix     = '';
+    protected $table = '';
+    protected $prefix = '';
 
     protected $useAutoIncrement = true;
-    protected $returnType     = 'array';
+    protected $returnType = 'array';
     protected $useSoftDeletes = true;
     protected $useTimestamps = true;
 
-    protected $validationRules    = [];
+    protected $validationRules = [];
     protected $validationMessages = [];
-    protected $skipValidation     = false;
+    protected $skipValidation = false;
 
     public function __construct()
     {
         $this->primaryKey = $this->prefix . '_idx';
-        $this->createdField  = $this->prefix . '_created_at';
-        $this->updatedField  = $this->prefix . '_updated_at';
-        $this->deletedField  = $this->prefix . '_deleted_at';
+        $this->createdField = $this->prefix . '_created_at';
+        $this->updatedField = $this->prefix . '_updated_at';
+        $this->deletedField = $this->prefix . '_deleted_at';
         $this->tempReturnType = $this->returnType;  // 중요!!!!!
+    }
+
+    public function getPager()
+    {
+        //  출력할 리스트 수
+        $perPage = 5;
+
+        $this->where("$this->deletedField is null");
+
+        return [
+            'list'  => $this->paginate($perPage),
+            'links' => $this->pager->links(),
+            'total_count' => $this->pager->gettotal(),
+        ];
     }
 
     public function edit($input)
@@ -55,6 +71,15 @@ class BaseModel extends Model
         }
 
         return $input[$this->primaryKey];
+    }
+
+    public function del($key)
+    {
+        $set[$this->prefix . "_deleted_id"] = 'admin';
+        $set[$this->prefix . "_deleted_ip"] = $_SERVER["REMOTE_ADDR"];
+
+        $this->update($key, $set);
+        $this->delete($key);
     }
 
 }
