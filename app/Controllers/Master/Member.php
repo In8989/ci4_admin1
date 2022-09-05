@@ -30,9 +30,17 @@ class Member extends MasterController
     public function edit()
     {
         $validate = $this->validate([
-            'mem_name' => [
-                'rules'  => 'required',
-                'errors' => ['required' => '이름을 입력해 주세요.'],
+            //'mem_id' => [
+            //    'rules'  => 'required',
+            //    'errors' => ['required' => '아이디를 입력해 주세요.'],
+            //],
+            'userfile' => [
+                'label' => 'Image File',
+                'rules' => 'uploaded[userfile]'
+                    . '|is_image[userfile]'
+                    . '|mime_in[userfile,image/jpg,image/jpeg,image/gif,image/png,image/webp]'
+                    . '|max_size[userfile,100]'
+                    . '|max_dims[userfile,1024,768]',
             ],
         ]);
 
@@ -52,11 +60,14 @@ class Member extends MasterController
         } else if ($this->request->getMethod() == 'post') {
             $input = $this->request->getPost();
 
-            if ($this->model->edit($input)) {
-                return redirect()->to($this->viewPath);
-            } else {
-                alert("오류가 발생하였습니다.");
-            }
+            $img = $this->request->getFile('userfile');
+            print_array($img);
+            exit;
+            //if ($this->model->edit($input)) {
+            //    return redirect()->to($this->viewPath);
+            //} else {
+            //    alert("오류가 발생하였습니다.");
+            //}
         }
 
     }

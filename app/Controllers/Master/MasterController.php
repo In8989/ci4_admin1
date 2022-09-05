@@ -20,18 +20,14 @@ class MasterController extends BaseController
     {
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
+
+        // 로그인 여부 체크 후 로그인 페이지로 보내기
         if (!$this->isLogin) {
             if ($this->cont_url != "/master/login") {
                 //helper('alert');
                 alert('로그인하세요.','/master/login');
             }
         }
-    }
-
-    public function __construct()
-    {
-        parent::__construct();
-
     }
 
 }

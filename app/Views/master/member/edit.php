@@ -37,6 +37,11 @@
                                 <input type="text" class="form-control" id="mem_email" name="mem_email" placeholder="Enter your email" value="<?php echo $mem_email ?>" />
                             </div>
 
+                            <div class="mb-3">
+                                <label for="userfile" class="form-label">File Upload</label>
+                                <input class="form-control" type="file" id="userfile" name="userfile">
+                            </div>
+
 
                             <?php if ($idx == '') { ?>
                                 <button class="btn btn-primary d-grid w-100">Sign up</button>
@@ -45,12 +50,7 @@
                             <?php } ?>
                         </form>
 
-                        <p class="text-center">
-                            <span>Already have an account?</span>
-                            <a href="auth-login-basic.html">
-                                <span>Sign in instead</span>
-                            </a>
-                        </p>
+
                     </div>
                 </div>
                 <!-- Register Card -->
