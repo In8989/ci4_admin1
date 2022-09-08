@@ -3,6 +3,8 @@
 namespace App\Controllers\Master;
 
 use App\Controllers\Master\MasterController;
+use App\Libraries\Uploader;
+use App\Controllers\Uploaded;
 
 class Member extends MasterController
 {
@@ -30,17 +32,9 @@ class Member extends MasterController
     public function edit()
     {
         $validate = $this->validate([
-            //'mem_id' => [
-            //    'rules'  => 'required',
-            //    'errors' => ['required' => '아이디를 입력해 주세요.'],
-            //],
-            'userfile' => [
-                'label' => 'Image File',
-                'rules' => 'uploaded[userfile]'
-                    . '|is_image[userfile]'
-                    . '|mime_in[userfile,image/jpg,image/jpeg,image/gif,image/png,image/webp]'
-                    . '|max_size[userfile,100]'
-                    . '|max_dims[userfile,1024,768]',
+            'mem_id' => [
+                'rules'  => 'required',
+                'errors' => ['required' => '아이디를 입력해 주세요.'],
             ],
         ]);
 
@@ -55,19 +49,30 @@ class Member extends MasterController
 
             $data['idx'] = $idx;
 
+            $Uploaded = new Uploaded();
+            $Uploaded->file($data['mem_thumb1']);
+
             return $this->run($this->viewPath . '/edit', $data);
 
         } else if ($this->request->getMethod() == 'post') {
             $input = $this->request->getPost();
 
-            $img = $this->request->getFile('userfile');
-            print_array($img);
-            exit;
-            //if ($this->model->edit($input)) {
-            //    return redirect()->to($this->viewPath);
-            //} else {
-            //    alert("오류가 발생하였습니다.");
-            //}
+            $uploader = new Uploader();
+            //$fileInfo = $uploader->upload('member');
+            $filesInfo = $uploader->multiUpload('member');
+
+            foreach ($filesInfo as $key => $file) {
+                $num = $key + 1;
+                if ($file['hasError'] != 0) continue;
+
+                $input["mem_thumb{$num}"] = $file['savedPath'];
+            }
+
+            if ($this->model->edit($input)) {
+                return redirect()->to($this->viewPath);
+            } else {
+                alert("오류가 발생하였습니다.");
+            }
         }
 
     }

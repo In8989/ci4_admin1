@@ -35,8 +35,8 @@ class BaseModel extends Model
         $this->where("$this->deletedField is null");
 
         return [
-            'list'  => $this->paginate($perPage),
-            'links' => $this->pager->links(),
+            'list'        => $this->paginate($perPage),
+            'links'       => $this->pager->links(),
             'total_count' => $this->pager->gettotal(),
         ];
     }
@@ -46,8 +46,13 @@ class BaseModel extends Model
 
         $set = array();
         foreach ($this->allowedFields as $field) {
+
             if (isset($input[$field]) || array_key_exists($field, $input)) {
-                $set[$field] = $input[$field];
+                if (is_null($input[$field])) {    // Null 데이터 처리
+                    $this->set($field, 'NULL', false);
+                } else {   // 일반 데이터 처리
+                    $set[$field] = $input[$field];
+                }
             }
         }
 

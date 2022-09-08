@@ -15,7 +15,7 @@
                             <input type="hidden" name="<?php echo $primaryKey ?>" id="<?php echo $primaryKey ?>" value="<?php echo $idx?>">
                             <div class="mb-3">
                                 <label for="mem_id" class="form-label">ID</label>
-                                <input type="text" class="form-control" id="mem_id" name="mem_id" placeholder="Enter your id" autofocus value="<?php echo $mem_id ?>" />
+                                <input type="text" class="form-control" id="mem_id" name="mem_id" placeholder="Enter your id" autofocus value="<?php echo $mem_id ? $mem_id : '1111' ?>" />
                             </div>
                             <div class="mb-3 form-password-toggle">
                                 <label class="form-label" for="mem_pass">Password</label>
@@ -39,7 +39,12 @@
 
                             <div class="mb-3">
                                 <label for="userfile" class="form-label">File Upload</label>
-                                <input class="form-control" type="file" id="userfile" name="userfile">
+                                <?php
+                                if ($mem_thumb1 == '') { ?>
+                                <input class="form-control" type="file" id="userfile" name="userfile[]" multiple>
+                                <?php } else { ?>
+                                    <img src="" alt="image">
+                                <?php } ?>
                             </div>
 
 

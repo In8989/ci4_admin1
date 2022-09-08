@@ -110,7 +110,7 @@ class BaseController extends Controller
         $data['footer'] = view('master/layout/footer');
         $data['content'] = view($path, $params);
 
-        return view("master/layout/layout", $data);;
+        return view("master/layout/layout", $data);
     }
 
     /**
