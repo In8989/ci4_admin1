@@ -12,7 +12,7 @@
                         </div>
                         <!-- /Logo -->
                         <form method="POST" enctype="multipart/form-data" id="formAuthentication" class="mb-3">
-                            <input type="hidden" name="<?php echo $primaryKey ?>" id="<?php echo $primaryKey ?>" value="<?php echo $idx?>">
+                            <input type="hidden" name="<?php echo $primaryKey ?>" id="<?php echo $primaryKey ?>" value="<?php echo $idx ?>">
                             <div class="mb-3">
                                 <label for="mem_id" class="form-label">ID</label>
                                 <input type="text" class="form-control" id="mem_id" name="mem_id" placeholder="Enter your id" autofocus value="<?php echo $mem_id ? $mem_id : '1111' ?>" />
@@ -39,12 +39,19 @@
 
                             <div class="mb-3">
                                 <label for="userfile" class="form-label">File Upload</label>
+
+                                <!--<input class="form-control" type="file" id="userfile" name="userfile[]" multiple>-->
+
                                 <?php
-                                if ($mem_thumb1 == '') { ?>
-                                <input class="form-control" type="file" id="userfile" name="userfile[]" multiple>
-                                <?php } else { ?>
-                                    <img src="" alt="image">
-                                <?php } ?>
+                                for ($i = 1; $i <= 2; $i++) { ?>
+                                    <input class="form-control" type="file" id="userfile<?php echo $i ?>" name="userfile<?php echo $i ?>">
+                                    <?php if (${'mem_thumb' . $i} != '') { ?>
+                                        <img src="/uploaded/file/<?php echo ${'mem_thumb' . $i} ?>" width="100">
+                                        <button type="button" onclick="imageDown('<?php echo ${'mem_thumb' . $i} ?>')">다운로드</button>
+                                        <button type="button" onclick="imageDel('<?php echo $i ?>')">삭제</button>
+                                    <?php }
+                                }
+                                ?>
                             </div>
 
 
@@ -64,3 +71,31 @@
     </div>
 </div>
 <!-- / Content -->
+
+<script>
+
+    function imageDel(num) {
+
+        let column = "mem_thumb" + num;
+
+        $.ajax({
+            type    : 'POST',
+            dataType: 'JSON',
+            url     : '<?php echo $currentURL; ?>/del',
+            data    : {'idx': <?php echo $idx ?>, 'column': column},
+        });
+
+        document.location.reload();
+
+    }
+
+    function imageDown(fpath) {
+        if (!fpath) {
+            alert("존재하지 않는 이미지 입니다.");
+            return;
+        }
+
+        var str = "/uploaded/download/" + fpath;
+        window.open(str);
+    }
+</script>

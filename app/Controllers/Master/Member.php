@@ -49,24 +49,22 @@ class Member extends MasterController
 
             $data['idx'] = $idx;
 
-            $Uploaded = new Uploaded();
-            $Uploaded->file($data['mem_thumb1']);
-
             return $this->run($this->viewPath . '/edit', $data);
 
         } else if ($this->request->getMethod() == 'post') {
             $input = $this->request->getPost();
 
             $uploader = new Uploader();
-            //$fileInfo = $uploader->upload('member');
-            $filesInfo = $uploader->multiUpload('member');
+            $fileInfo = $uploader->upload('member');
 
+            /*//  멀티업로드
+            $filesInfo = $uploader->multiUpload('member');
             foreach ($filesInfo as $key => $file) {
                 $num = $key + 1;
                 if ($file['hasError'] != 0) continue;
 
                 $input["mem_thumb{$num}"] = $file['savedPath'];
-            }
+            }*/
 
             if ($this->model->edit($input)) {
                 return redirect()->to($this->viewPath);
@@ -74,6 +72,28 @@ class Member extends MasterController
                 alert("오류가 발생하였습니다.");
             }
         }
+
+    }
+
+    public function del()
+    {
+        $input = $this->request->getPost();
+
+        $row = $this->model->find($input['idx']);
+
+        if ($row[$input['column']] != '') {
+            $set = array(
+                $this->primaryKey => $input['idx'],
+                $input['column'] => '',
+            );
+
+            $this->model->edit($set);
+            $uploader = new Uploader();
+            $uploader->file_del($row[$input['column']]);
+
+        }
+
+
 
     }
 

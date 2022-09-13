@@ -43,7 +43,6 @@ class BaseModel extends Model
 
     public function edit($input)
     {
-
         $set = array();
         foreach ($this->allowedFields as $field) {
 

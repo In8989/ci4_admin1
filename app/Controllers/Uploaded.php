@@ -8,31 +8,34 @@ use Psr\Log\LoggerInterface;
 
 class Uploaded extends BaseController
 {
+    private $uploaded_path;
+
     /**
      * Constructor.
      *
-     * @param RequestInterface  $request
+     * @param RequestInterface $request
      * @param ResponseInterface $response
-     * @param LoggerInterface   $logger
+     * @param LoggerInterface $logger
      */
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
 
+        $filePath = str_replace(array('uploaded/file/', 'uploaded/download/'), '', uri_string());
+        $this->uploaded_path = WRITEPATH . 'uploads/' . $filePath;
     }
 
-    public function file($uploaded_path)
+    public function file()
     {
-        echoDev($uploaded_path);
-        exit;
-        $filePath = WRITEPATH . 'uploads/' . $uploaded_path;
-
-        $file = new \CodeIgniter\Files\File($filePath);
-        if(($image = file_get_contents($filePath)) === FALSE)
+        $file = new \CodeIgniter\Files\File($this->uploaded_path);
+        if (($image = file_get_contents($this->uploaded_path)) === FALSE)
             show_404();
 
-        $mimeType = $file->getMimeType();
+        //$mimeType = $file->getMimeType();
+        $mimeType = pathinfo($this->uploaded_path);
+        $mimeType = $mimeType['extension'];
+
         $this->response
             ->setStatusCode(200)
             ->setContentType($mimeType)
@@ -41,24 +44,8 @@ class Uploaded extends BaseController
 
     }
 
-    public function download($uploaded_path)
+    public function download()
     {
-        $filePath = WRITEPATH . 'uploads/' . $uploaded_path;
-
-        if (file_exists($filePath)) {
-            header('Content-Description: File Transfer');
-            header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename='.basename($filePath));
-            header('Content-Transfer-Encoding: binary');
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-            header('Pragma: public');
-            header('Content-Length: ' . filesize($filePath));
-            ob_clean();
-            flush();
-            readfile($filePath);
-            exit;
-        }
-
+        return $this->response->download($this->uploaded_path, null);
     }
 }

@@ -24,9 +24,7 @@ function isDev()
 function echoDev($str)
 {
     if (!isDev()) return;
-    echo "<pre>";
     echo $str;
-    echo "</pre>";
 }
 
 /**

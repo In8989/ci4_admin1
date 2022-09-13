@@ -9,6 +9,7 @@ class Uploader
 {
 
     protected $request; // request 객체
+    protected $ready_to_del = array();    // 신규파일이 업로드되고 삭제 대기 상태의 파일
     protected $allow_type = array('jpg', 'jpeg', 'gif', 'png', 'hwp', 'pdf', 'zip', 'txt', 'xls', 'xlsx', 'ppt', 'pptx', 'doc', 'docx'); // 업로드 가능한 확장자 지정
 
     public function __construct()
@@ -21,8 +22,9 @@ class Uploader
         // 이미지 업로드
         $path .= '/' . date("Y/m");
 
-        $file = $this->request->getFile('userfile');    //  파일 정보를 가지고 오기   명칭에 대한 규칙 정하기
-
+        $files = $this->request->getFiles();    //  파일 정보를 가지고 오기   명칭에 대한 규칙 정하기
+        print_array($files);
+        exit;
         $fileInfo = array();
         $fileInfo['hasError'] = false;  //  오류 플래그
         if ($file->hasMoved() === false) {  // 파일이 임시 디렉토리에서 실제 저장 디렉토리로 이동했는지 알아보려면 ->hasMoved()를 사용합니다.
@@ -96,6 +98,13 @@ class Uploader
 
         return $fileInfo;
 
+    }
+
+    public function file_del($path)
+    {
+        if (file_exists(WRITEPATH . "uploads/" . $path)) {
+            @unlink(WRITEPATH . "uploads/" . $path);
+        }
     }
 
 
