@@ -55,18 +55,33 @@ class Member extends MasterController
             $input = $this->request->getPost();
 
             $uploader = new Uploader();
-            $fileInfo = $uploader->upload('member');
+            $filesInfo = $uploader->upload('member');   //  업로드
+            //$filesInfo = $uploader->multiUpload('member');    //  멀티업로드
 
-            /*//  멀티업로드
-            $filesInfo = $uploader->multiUpload('member');
             foreach ($filesInfo as $key => $file) {
-                $num = $key + 1;
                 if ($file['hasError'] != 0) continue;
 
-                $input["mem_thumb{$num}"] = $file['savedPath'];
-            }*/
+                $input["mem_thumb{$key}"] = $file['savedPath']; //  db에 저장할 이미지파일 경로
+            }
+
+            //  기존 파일이 있는지 체크 후 파일 삭제를 위한 배열 만들기
+            $ready_to_del = array();
+            if ($input[$this->primaryKey]) {
+                $rs_info = $this->model->find($input[$this->primaryKey]);
+
+                for ($i = 1; $i <= 2; $i++) {
+
+                    if (isset($input["mem_thumb{$i}"]) && $rs_info["mem_thumb{$i}"] != '')
+                        $ready_to_del[] = $rs_info["mem_thumb{$i}"];
+                }
+
+                $this->viewPath = $this->viewPath . "/edit/?idx=" . $input[$this->primaryKey];
+            }
+
 
             if ($this->model->edit($input)) {
+                $uploader->file_del($ready_to_del);
+
                 return redirect()->to($this->viewPath);
             } else {
                 alert("오류가 발생하였습니다.");
@@ -75,7 +90,7 @@ class Member extends MasterController
 
     }
 
-    public function del()
+    public function del_file()
     {
         $input = $this->request->getPost();
 
@@ -84,15 +99,19 @@ class Member extends MasterController
         if ($row[$input['column']] != '') {
             $set = array(
                 $this->primaryKey => $input['idx'],
-                $input['column'] => '',
+                $input['column']  => '',
             );
 
-            $this->model->edit($set);
             $uploader = new Uploader();
-            $uploader->file_del($row[$input['column']]);
+            $uploader->file_del(array($row[$input['column']]));
+
+            $this->model->edit($set);
+
+            $json['result'] = 'ok';
+
+            die(json_encode($json));
 
         }
-
 
 
     }

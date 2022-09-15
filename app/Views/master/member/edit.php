@@ -40,15 +40,18 @@
                             <div class="mb-3">
                                 <label for="userfile" class="form-label">File Upload</label>
 
+                                <!--멀티업로드-->
                                 <!--<input class="form-control" type="file" id="userfile" name="userfile[]" multiple>-->
 
                                 <?php
                                 for ($i = 1; $i <= 2; $i++) { ?>
                                     <input class="form-control" type="file" id="userfile<?php echo $i ?>" name="userfile<?php echo $i ?>">
                                     <?php if (${'mem_thumb' . $i} != '') { ?>
-                                        <img src="/uploaded/file/<?php echo ${'mem_thumb' . $i} ?>" width="100">
-                                        <button type="button" onclick="imageDown('<?php echo ${'mem_thumb' . $i} ?>')">다운로드</button>
-                                        <button type="button" onclick="imageDel('<?php echo $i ?>')">삭제</button>
+                                        <div id="thumb_<?php echo $i ?>">
+                                            <img src="/uploaded/file/<?php echo ${'mem_thumb' . $i} ?>" width="100">
+                                            <button type="button" onclick="fileDown('<?php echo ${'mem_thumb' . $i} ?>')">다운로드</button>
+                                            <button type="button" onclick="fileDel('<?php echo $i ?>')">삭제</button>
+                                        </div>
                                     <?php }
                                 }
                                 ?>
@@ -74,22 +77,37 @@
 
 <script>
 
-    function imageDel(num) {
+    function fileDel(num) {
 
         let column = "mem_thumb" + num;
 
         $.ajax({
             type    : 'POST',
             dataType: 'JSON',
-            url     : '<?php echo $currentURL; ?>/del',
+            url     : '<?php echo $currentURL; ?>/del_file',
             data    : {'idx': <?php echo $idx ?>, 'column': column},
+            success : function (data) {
+                if (data['result'] === 'ok') {
+                    alert('파일이 삭제되었습니다.');
+                    //  이미지 영역 삭제처리
+                    $('#thumb_'+num).remove();
+                } else {
+                    alert('실패');
+                }
+
+            },
+            error   : function (xhr, ajaxOptions, thrownError) {
+                alert('에러');
+                console.log(xhr.status);
+                console.log(thrownError);
+            }
         });
 
-        document.location.reload();
+        //document.location.reload();
 
     }
 
-    function imageDown(fpath) {
+    function fileDown(fpath) {
         if (!fpath) {
             alert("존재하지 않는 이미지 입니다.");
             return;
