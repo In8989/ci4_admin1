@@ -17,13 +17,10 @@
     <div class="layout-container">
         <!-- Menu -->
         <?php echo $aside ?>
-
         <!-- / Menu -->
 
         <!-- Layout container -->
-
         <?php echo $content ?>
-
         <!-- / Layout page -->
     </div>
 

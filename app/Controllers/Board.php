@@ -1,17 +1,33 @@
 <?php
 
-namespace App\Controllers\Master;
+namespace App\Controllers;
 
-use App\Controllers\Master\MasterController;
+use App\Controllers\BaseController;
 use App\Libraries\Uploader;
-use App\Controllers\Uploaded;
 
-class Member extends MasterController
+class Board extends BaseController
 {
-    protected $models = ['MemberModel'];
-    protected $viewPath = '/master/member';
 
-    public function index()
+    protected $models = ['BoardDataModel', 'BoardConfModel', 'BoardFileModel'];
+    protected $viewPath = 'theme/board';
+    protected $boc_code = '';   //  게시판 고유 코드
+    protected $conf = '';   // 게시판 설정 정보
+
+    public function index($mode = '', $boc_code = '')
+    {
+        // 게시판 체크
+        if (!$this->conf = $this->BoardConfModel->getInfo($boc_code)) alert("존재하지 않는 게시판입니다.");
+
+        $this->boc_code = $this->conf['boc_code'];
+        $this->model->setDataTable($this->boc_code);
+
+        // mode 이름인 메서드로 이동
+        if (method_exists($this, $mode)) {
+            return $this->$mode();
+        }
+    }
+
+    public function list()
     {
         /***    검색 기능 시작   ***/
         if ($this->search_obj[1]) $this->model->like("mem_name", $this->search_obj[1]);
@@ -26,19 +42,31 @@ class Member extends MasterController
             'total_count' => $pager['total_count'],
         ];
 
-        return $this->run($this->viewPath . '/list', $data);
+        $this->addData($data);
+
+        return $this->run($this->viewPath . '/' . $this->conf['boc_skin'] . '/list', $data);
     }
 
-    public function edit()
+    public function read()
     {
+        //  /board/$this->boc_code/read/1
+        echo 'read';
+
+        exit;
+    }
+
+    public function write()
+    {
+        //  /board/$this->boc_code/write
+
         $validate = $this->validate([
-            'mem_id' => [
+            'bod_title' => [
                 'rules'  => 'required',
-                'errors' => ['required' => '아이디를 입력해 주세요.'],
+                'errors' => ['required' => '제목을 입력해주세요.'],
             ],
         ]);
 
-        if (!$validate) {   // Form 출력
+        if (!$validate) {
             $idx = $this->request->getGet('idx') ?? '';
 
             if ($idx) {
@@ -48,15 +76,16 @@ class Member extends MasterController
             }
 
             $data['idx'] = $idx;
+            $this->addData($data);
 
-            return $this->run($this->viewPath . '/edit', $data);
+            return $this->run($this->viewPath . '/' . $this->conf['boc_skin'] . '/edit', $data);
 
         } else if ($this->request->getMethod() == 'post') {
+
             $input = $this->request->getPost();
 
             $uploader = new Uploader();
-            $filesInfo = $uploader->upload('member');   //  업로드
-            //$filesInfo = $uploader->multiUpload('member');    //  멀티업로드
+            $filesInfo = $uploader->upload("$this->cont_url/$this->boc_code");   //  업로드
 
             foreach ($filesInfo as $key => $file) {
                 if ($file['hasError'] != 0) continue;
@@ -76,43 +105,19 @@ class Member extends MasterController
 
                 $this->viewPath = $this->viewPath . "/edit/?idx=" . $input[$this->primaryKey];
             }
-
-
-            if ($this->model->edit($input)) {
-                $uploader->file_del($ready_to_del);
-
-                return redirect()->to($this->viewPath);
-            } else {
-                alert("오류가 발생하였습니다.");
-            }
+            exit;
         }
 
     }
 
-    public function del_file()
+    private function addData(&$data)
     {
-        $input = $this->request->getPost();
-
-        $row = $this->model->find($input['idx']);
-
-        if ($row[$input['column']] != '') {
-            $set = array(
-                $this->primaryKey => $input['idx'],
-                $input['column']  => '',
-            );
-
-            $uploader = new Uploader();
-            $uploader->file_del(array($row[$input['column']]));
-
-            $this->model->edit($set);
-
-            $json['result'] = 'ok';
-
-            die(json_encode($json));
-
-        }
-
-
+        $data["list_page"] = $this->cont_url . "/" . $this->boc_code;
+        $data['write_page'] = $data['list_page'] . "/write";
+        $data["reply_page"] = $data["list_page"] . "/reply";
+        $data["delete_page"] = $data["list_page"] . "/delete";
+        $data["download_page"] = $data["list_page"] . "/download";
+        $data['conf'] = $this->conf;
+        $data['boc_code'] = $this->boc_code;
     }
-
 }

@@ -1,6 +1,6 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
     <div class="app-brand demo">
-        <a href="/master/main" class="app-brand-link">
+        <a href="/" class="app-brand-link">
             <span class="app-brand-text demo menu-text fw-bolder ms-2">Sneat</span>
         </a>
         <a href="/master/login/logout">
@@ -33,6 +33,12 @@
             </a>
         </li>
 
+        <li class="menu-item <?php if (url_is('master/boardconf*')) echo 'active' ?>">
+            <a href="/master/boardconf" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                <div data-i18n="Analytics">Board Config</div>
+            </a>
+        </li>
 
         <!-- Layouts -->
 

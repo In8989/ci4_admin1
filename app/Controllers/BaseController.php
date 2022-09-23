@@ -135,7 +135,7 @@ class BaseController extends Controller
         return redirect()->to($this->viewPath);
     }
 
-    // 데이터에 추가하기기 설명 추가하기;;;;;;;;;;;;;
+    // 데이터에 추가하기 설명 추가하기
     public function addCommonData(&$data)
     {
         $data['currentURL'] = $this->getControllerUrl();

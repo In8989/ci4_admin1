@@ -8,6 +8,7 @@ class BaseModel extends Model
 {
     protected $table = '';
     protected $prefix = '';
+    protected $allowedFields = '';
 
     protected $useAutoIncrement = true;
     protected $returnType = 'array';
@@ -32,7 +33,7 @@ class BaseModel extends Model
         //  출력할 리스트 수
         $perPage = 5;
 
-        $this->where("$this->deletedField is null");
+        $this->where("$this->deletedField is null or $this->deletedField = ''");
 
         return [
             'list'        => $this->paginate($perPage),
@@ -72,6 +73,7 @@ class BaseModel extends Model
 
             $this->insert($set);
             $input[$this->primaryKey] = $this->insertID();
+
         }
 
         return $input[$this->primaryKey];

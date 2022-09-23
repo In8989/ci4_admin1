@@ -51,3 +51,12 @@ if (file_exists(APPPATH . 'Config/' . ENVIRONMENT . '/Routes.php'))
 {
 	require APPPATH . 'Config/' . ENVIRONMENT . '/Routes.php';
 }
+
+$routes->group("board",function($routes){
+    $routes->add("(:alphanum)","Board::index/list/$1");
+    //$routes->add("(:alphanum)/read/(:num)","Board::index/read/$1/$2");
+    //$routes->add("(:alphanum)/write/","Board::index/write/$1");
+    //$routes->add("(:alphanum)/write/(:num)","Board::index/write/$1/$2");
+    $routes->add("(:alphanum)/read/","Board::index/read/$1");
+    $routes->add("(:alphanum)/write/","Board::index/write/$1");
+});

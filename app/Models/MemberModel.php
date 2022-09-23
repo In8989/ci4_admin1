@@ -5,7 +5,7 @@ namespace App\Models;
 class MemberModel extends BaseModel
 {
 
-    protected $table = 'my_member';
+    protected $table = 'member';
     protected $prefix = 'mem';
     protected $allowedFields = ['mem_id', 'mem_pass', 'mem_name', 'mem_tel', 'mem_email',
                                 'mem_thumb1', 'mem_thumb2',
