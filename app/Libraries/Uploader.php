@@ -23,7 +23,6 @@ class Uploader
         $path .= '/' . date("Y/m");
 
         $files = $this->request->getFiles();    //  파일 정보를 가지고 오기   명칭에 대한 규칙 정하기
-
         $fileInfo = array();
         $key = 1;
 
@@ -52,9 +51,10 @@ class Uploader
                         $fileInfo[$key]['clientName'] = $file->getClientName(); // 사용자가 입력한 파일 이름
                         $fileInfo[$key]['name'] = $file->getName(); // 저장된 이름을 반환
                         $fileInfo[$key]['guessExtention'] = $file->guessExtension(); // 실제 확장자
-                        //$fileInfo['mimeType'] = $file->getMimeType();  //  첨부한 파일은 확장자 알아내기 (임시디렉토리에 있을 때만 사용 가능)
-                        //$fileInfo['clientMimeType'] = $file->getClientMimeType(); // 웹 브라우저가 보낸 mimeType
-                        //$fileInfo['clientExtention'] = $file->getClientExtension(); // 웹브라우저가 보낸 확장자
+                        $fileInfo[$key]['size'] = $file->getSize(); // 바이트 단위 파일 크기
+                        //$fileInfo[$key]['mimeType'] = $file->getMimeType();  //  첨부한 파일은 확장자 알아내기 (임시디렉토리에 있을 때만 사용 가능)
+                        //$fileInfo[$key]['clientMimeType'] = $file->getClientMimeType(); // 웹 브라우저가 보낸 mimeType
+                        //$fileInfo[$key]['clientExtention'] = $file->getClientExtension(); // 웹브라우저가 보낸 확장자
 
                         $savedPath = $file->store($path); //  임시 디렉토리에서 저장 디렉토리로 이동
                         $fileInfo[$key]['savedPath'] = $savedPath;

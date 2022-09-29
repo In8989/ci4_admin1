@@ -7,7 +7,7 @@ class BoardDataModel extends BaseModel
 
     protected $table = 'board';
     protected $prefix = 'bod';
-    protected $allowedFields = ['boc_code', 'bod_level', 'bod_sort', 'bod_mem_id', 'bod_origin_mem_idx',
+    protected $allowedFields = ['bod_group', 'bod_level', 'bod_sort', 'bod_mem_id', 'bod_origin_mem_idx',
                                 'bod_writer_name', 'bod_password', 'bod_secret', 'bod_category', 'bod_title',
                                 'bod_use_editor', 'bod_content', 'bod_read', 'bod_movie_url', 'bod_is_notice',
                                 'bod_created_id', 'bod_created_ip', 'bod_created_at',

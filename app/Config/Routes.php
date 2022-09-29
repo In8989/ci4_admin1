@@ -53,6 +53,7 @@ if (file_exists(APPPATH . 'Config/' . ENVIRONMENT . '/Routes.php'))
 }
 
 $routes->group("board",function($routes){
+    // $1 = 'boc_code'
     $routes->add("(:alphanum)","Board::index/list/$1");
     //$routes->add("(:alphanum)/read/(:num)","Board::index/read/$1/$2");
     //$routes->add("(:alphanum)/write/","Board::index/write/$1");

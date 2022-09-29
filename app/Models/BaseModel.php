@@ -19,6 +19,8 @@ class BaseModel extends Model
     protected $validationMessages = [];
     protected $skipValidation = false;
 
+    protected $SS_MID;  // 세션변수
+
     public function __construct()
     {
         $this->primaryKey = $this->prefix . '_idx';
@@ -26,12 +28,16 @@ class BaseModel extends Model
         $this->updatedField = $this->prefix . '_updated_at';
         $this->deletedField = $this->prefix . '_deleted_at';
         $this->tempReturnType = $this->returnType;  // 중요!!!!!
+
+        // 세션 변수화
+        $this->session = \Config\Services::session();
+        $this->SS_MID = $this->session->get('MID');
     }
 
-    public function getPager()
+    public function getPager($option = array())
     {
         //  출력할 리스트 수
-        $perPage = 5;
+        $perPage = $option["perPage"] ?? 5;
 
         $this->where("$this->deletedField is null or $this->deletedField = ''");
 
@@ -57,7 +63,7 @@ class BaseModel extends Model
         }
 
         // 데이터 입력/수정 모두 updated 날짜 기록
-        $set[$this->prefix . "_updated_id"] = 'admin';
+        $set[$this->prefix . "_updated_id"] = $this->SS_MID;
         $set[$this->prefix . "_updated_ip"] = $_SERVER["REMOTE_ADDR"];
 
         if (isset($input[$this->primaryKey]) && $input[$this->primaryKey] != "") {
@@ -68,7 +74,7 @@ class BaseModel extends Model
         } else {
             // 데이터 입력
 
-            $set[$this->prefix . "_created_id"] = 'admin';
+            $set[$this->prefix . "_created_id"] = $this->SS_MID;
             $set[$this->prefix . "_created_ip"] = $_SERVER["REMOTE_ADDR"];
 
             $this->insert($set);
@@ -81,7 +87,7 @@ class BaseModel extends Model
 
     public function del($key)
     {
-        $set[$this->prefix . "_deleted_id"] = 'admin';
+        $set[$this->prefix . "_deleted_id"] = $this->SS_MID;
         $set[$this->prefix . "_deleted_ip"] = $_SERVER["REMOTE_ADDR"];
 
         $this->update($key, $set);

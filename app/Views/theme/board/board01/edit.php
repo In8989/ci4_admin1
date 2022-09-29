@@ -15,6 +15,9 @@
                             <input type="hidden" name="<?php echo $primaryKey ?>" id="<?php echo $primaryKey ?>" value="<?php echo $idx ?>">
 
                             <div class="mb-3">
+                                <label><input type="checkbox" name="bod_is_notice" value="1" autocomplete="off"> 공지사항으로 설정</label>
+                            </div>
+                            <div class="mb-3">
                                 <label for="bod_title" class="form-label">Title</label>
                                 <input type="text" class="form-control" id="bod_title" name="bod_title" autofocus value="<?php echo $bod_title ?>" />
                             </div>
@@ -27,7 +30,12 @@
                             if ($conf['boc_file_count'] > 0) {
                                 for ($i = 1; $i <= $conf['boc_file_count']; $i++) { ?>
                                     <input class="form-control" type="file" id="userfile<?php echo $i ?>" name="userfile<?php echo $i ?>">
-                                    <?php
+                                    <?php if (isset($bof_list[$i]['bof_idx'])) { ?>
+                                        <div id="thumb_<?php echo $bof_list[$i]['bof_idx'] ?>">
+                                            <img src="/uploaded/file/<?php echo $bof_list[$i]['bof_file_save'] ?>" width="100">
+                                            <button type="button" onclick="fileDown('<?php echo $bof_list[$i]['bof_file_save'] ?>')">다운로드</button>
+                                        </div>
+                                    <?php }
                                     if ($i == $conf['boc_file_count']) echo "<br/>";
                                 }
                             }
@@ -51,36 +59,6 @@
 <!-- / Content -->
 
 <script>
-
-    function fileDel(num) {
-
-        let column = "mem_thumb" + num;
-
-        $.ajax({
-            type    : 'POST',
-            dataType: 'JSON',
-            url     : '<?php echo $currentURL; ?>/del_file',
-            data    : {'idx': <?php echo $idx ?>, 'column': column},
-            success : function (data) {
-                if (data['result'] === 'ok') {
-                    alert('파일이 삭제되었습니다.');
-                    //  이미지 영역 삭제처리
-                    $('#thumb_' + num).remove();
-                } else {
-                    alert('실패');
-                }
-
-            },
-            error   : function (xhr, ajaxOptions, thrownError) {
-                alert('에러');
-                console.log(xhr.status);
-                console.log(thrownError);
-            }
-        });
-
-        //document.location.reload();
-
-    }
 
     function fileDown(fpath) {
         if (!fpath) {

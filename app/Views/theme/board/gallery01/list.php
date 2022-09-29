@@ -9,50 +9,40 @@
             <!-- Basic Bootstrap Table -->
             <div class="card">
                 <h5 class="card-header"><?php echo $boc_code ?> List</h5>
-                <div class="table-responsive text-nowrap">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>NAME</th>
-                            <th>TITLE</th>
-                            <th>CONTENT</th>
-                            <th>REGISTE</th>
-                            <th>ACTIVE</th>
-                        </tr>
-                        </thead>
-                        <tbody class="table-border-bottom-0">
-                        <?php for ($i = 0; $i < count($list); $i++) { ?>
-                            <tr>
-                                <td><?php echo $list[$i]['bod_mem_id'] ?></td>
-                                <td><?php echo $list[$i]['bod_writer_name'] ?></td>
-                                <td><?php echo $list[$i]['bod_title'] ?></td>
-                                <td><?php echo $list[$i]['bod_content'] ?></td>
-                                <td><?php echo $list[$i]['bod_created_at'] ?></td>
 
-                                <td>
-                                    <div class="dropdown">
-                                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                                            <i class="bx bx-dots-vertical-rounded"></i>
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="<?php echo $currentURL ?>/write?idx=<?php echo $list[$i][$primaryKey] ?>"><i class="bx bx-edit-alt me-1"></i> Edit</a>
-                                            <a class="dropdown-item" href="<?php echo $currentURL ?>/delete?idx=<?php echo $list[$i][$primaryKey] ?>"><i class="bx bx-trash me-1"></i> Delete</a>
+                <div class="table-responsive text-nowrap">
+                    <div class="row mb-5">
+                        <?php
+                        for ($i = 0; $i < count($list); $i++) {
+                            $row = $list[$i];
+                            if (isset($bof_list[$row['bod_idx']])) {
+                                foreach ($bof_list[$row['bod_idx']] as $bof) { ?>
+                                    <div class="col-md-6 col-lg-4 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <h5 class="card-title"><?php echo $row['bod_title'] ?></h5>
+                                                <h6 class="card-subtitle text-muted"><?php echo $row['bod_writer_name'] ?></h6>
+                                                <img class="img-fluid d-flex mx-auto my-4" src="/uploaded/file/<?php echo $bof['bof_file_save'] ?>" alt="Card image cap">
+                                                <p class="card-text"><?php echo $row['bod_content'] ?></p>
+                                                <a class="card-link" href="<?php echo $write_page ?>?idx=<?php echo $list[$i][$primaryKey] ?>"><i class="bx bx-edit-alt me-1"></i> Edit</a>
+                                                <a class="card-link" href="<?php echo $write_page ?>?idx=<?php echo $list[$i][$primaryKey] ?>"><i class="bx bx-trash me-1"></i> Delete</a>
+                                            </div>
                                         </div>
                                     </div>
-                                </td>
-                            </tr>
-
-                        <?php } ?>
-                        </tbody>
-                    </table>
+                                    <?php break;
+                                }
+                            }
+                        } ?>
+                    </div>
                 </div>
             </div>
 
             <div class="pageNavion">
                 <?= $links ?>
             </div>
-            <a href="<?php echo $currentURL ?>/edit"><button type="button">추가</button></a>
+            <a href="<?php echo $write_page ?>">
+                <button type="button">추가</button>
+            </a>
             <!--/ Basic Bootstrap Table -->
 
         </div>
