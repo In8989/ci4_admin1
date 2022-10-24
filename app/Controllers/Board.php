@@ -8,10 +8,12 @@ use App\Libraries\Uploader;
 class Board extends BaseController
 {
 
-    protected $models = ['BoardDataModel', 'BoardConfModel', 'BoardFileModel'];
+    protected $models = ['BoardDataModel', 'BoardConfModel', 'BoardFileModel', 'MemberModel'];
     protected $viewPath = 'theme/board';
-    protected $boc_code = '';   //  게시판 고유 코드
-    protected $conf = '';   // 게시판 설정 정보
+    protected $boc_code = '';       //  게시판 고유 코드
+    protected $conf = '';           //  게시판 설정 정보
+    protected $mem_info = array();  //  로그인 유저 정보
+    protected $auth = array();  //  로그인 유저 정보
 
     public function index($mode = '', $boc_code = '')
     {
@@ -21,6 +23,21 @@ class Board extends BaseController
         $this->boc_code = $this->conf['boc_code'];
         $this->model->setDataTable($this->boc_code);
 
+        //  로그인 시 회원 정보 가져오기
+        if ($this->mem_session['MIDX'] && $rs = $this->MemberModel->find($this->mem_session['MIDX'])) {
+            // 주요 정보만 View로 내려주기
+            $this->mem_info = array(
+                "mem_idx"   => $rs["mem_idx"],
+                "mem_id"    => $rs["mem_id"],
+                "mem_name"  => $rs["mem_name"],
+                "mem_pass"  => $rs["mem_pass"],
+                "mem_level" => $rs["mem_level"],
+            );
+        }
+
+        //  권한 검사
+        $this->auth = $this->board_auth_check();
+
         // mode 이름인 메서드로 이동
         if (method_exists($this, $mode)) {
             return $this->$mode();
@@ -29,6 +46,9 @@ class Board extends BaseController
 
     public function list()
     {
+        //  권한 검사
+        if (!$this->auth['list']) alert("권한이 없습니다.");
+
         /***    검색 기능 시작   ***/
         if ($this->search_obj[1]) $this->model->like("mem_name", $this->search_obj[1]);
         if ($this->search_obj[2]) $this->model->like("mem_tel", $this->search_obj[2]);
@@ -48,7 +68,7 @@ class Board extends BaseController
             $bod_idx[] = $boc['bod_idx'];
         }
         $where = array(
-            "bod_idx" => $bod_idx,
+            "bod_idx"  => $bod_idx,
             "bod_code" => $this->boc_code,
         );
         $data['bof_list'] = $this->BoardFileModel->getFileList($where);
@@ -65,9 +85,11 @@ class Board extends BaseController
         exit;
     }
 
+    //  /board/$this->boc_code/write
     public function write()
     {
-        //  /board/$this->boc_code/write
+        //  권한 검사
+        if (!$this->auth['write']) alert("권한이 없습니다.");
 
         $validate = $this->validate([
             'bod_title' => [
@@ -87,7 +109,7 @@ class Board extends BaseController
 
             // 첨부파일 데이터 가져오기
             $where = array(
-                "bod_idx" => $idx,
+                "bod_idx"  => $idx,
                 "bod_code" => $this->boc_code,
             );
             $data['bof_list'] = $this->BoardFileModel->getFileList($where);
@@ -166,6 +188,9 @@ class Board extends BaseController
 
     public function reply()
     {
+        //  권한 검사
+        if (!$this->auth['reply']) alert("권한이 없습니다.");
+
         $validate = $this->validate([
             'bod_title' => [
                 'rules'  => 'required',
@@ -175,12 +200,21 @@ class Board extends BaseController
 
         if (!$validate) {
             $idx = $this->request->getGet('idx') ?? '';
+            if ($idx === '') alert('잘못된 접근입니다.');
 
             if ($idx) {
                 if (!$data = $this->model->find($idx)) alert('데이터를 찾을 수 없습니다.');
+
             } else {
                 foreach ($this->model->allowedFields as $field) $data[$field] = "";
             }
+
+            // 첨부파일 데이터 가져오기
+            $where = array(
+                "bod_idx"  => $idx,
+                "bod_code" => $this->boc_code,
+            );
+            $data['bof_list'] = $this->BoardFileModel->getFileList($where);
 
             $data['idx'] = $idx;
             $this->addData($data);
@@ -188,29 +222,12 @@ class Board extends BaseController
             return $this->run($this->viewPath . '/' . $this->conf['boc_skin'] . '/edit', $data);
 
         } else if ($this->request->getMethod() == 'post') {
+            //-- 저장 시
 
             $input = $this->request->getPost();
 
             $uploader = new Uploader();
             $filesInfo = $uploader->upload("$this->cont_url/$this->boc_code");   //  업로드
-
-            foreach ($filesInfo as $key => $file) {
-                if ($file['hasError'] != 0) continue;
-                $input["mem_thumb{$key}"] = $file['savedPath']; //  db에 저장할 이미지파일 경로
-            }
-
-            //  기존 파일이 있는지 체크 후 파일 삭제를 위한 배열 만들기
-            $ready_to_del = array();
-            if ($input[$this->primaryKey]) {
-                $rs_info = $this->model->find($input[$this->primaryKey]);
-
-                for ($i = 1; $i <= 2; $i++) {
-
-                    if (isset($input["mem_thumb{$i}"]) && $rs_info["mem_thumb{$i}"] != '')
-                        $ready_to_del[] = $rs_info["mem_thumb{$i}"];
-                }
-
-            }
 
             $input["bod_group"] = 1;
             $input["bod_level"] = 1;
@@ -227,9 +244,48 @@ class Board extends BaseController
 
             $bod_idx = $this->model->edit($input);
 
+            //-- board_file db 저장부분 시작
+            $bof_input = array();
+
+            foreach ($filesInfo as $key => $file) {
+                if ($file['hasError'] != 0) continue;
+                $bof_input[$key]["bof_bod_code"] = $this->boc_code;
+                $bof_input[$key]["bof_bod_idx"] = $bod_idx;
+                $bof_input[$key]["bof_num"] = $key;
+                $bof_input[$key]["bof_file_save"] = $file['savedPath']; //  board_file db에 저장할 이미지파일 경로
+                $bof_input[$key]["bof_file_name"] = $file['name'];
+                $bof_input[$key]["bof_file_size"] = $file['size'];
+            }
+
+            //  기존 파일이 있는지 체크 후 파일 삭제를 위한 배열 만들기
+            $ready_to_del = array();
+            foreach ($bof_input as $key => $bof) {
+
+                $this->BoardFileModel->where("(bof_deleted_at is null or bof_deleted_at = '')");
+                $this->BoardFileModel->where('bof_bod_code', $bof['bof_bod_code']);
+                $this->BoardFileModel->where('bof_bod_idx', $bod_idx);
+                $this->BoardFileModel->where('bof_num', $key);
+                $bof_info = $this->BoardFileModel->get()->getRowArray();
+
+                if ($bof_info) {
+                    if (isset($bof["bof_file_save"]) && $bof_info["bof_file_save"] != '') {
+                        $ready_to_del[] = $bof_info["bof_file_save"];   //  삭제할 파일 위치
+                        $this->BoardFileModel->del($bof_info['bof_idx']);   //  기존 파일 데이터 삭제처리
+                    }
+                }
+            }
+
+            //  board_file db 저장 실행
+            foreach ($bof_input as $bof) {
+                $this->BoardFileModel->edit($bof);
+            }
+            $uploader->file_del($ready_to_del);
+            // board_file db 저장부분 끝 --
+
             return redirect()->to($this->cont_url . "/" . $this->boc_code);
 
         }
+
     }
 
     public function delete()
@@ -243,11 +299,10 @@ class Board extends BaseController
         }
 
         $input = $this->request->getPost();
-        print_array($input);
+        print_array($data);
         exit;
 
     }
-
 
     private function addData(&$data)
     {
@@ -259,4 +314,38 @@ class Board extends BaseController
         $data['conf'] = $this->conf;
         $data['boc_code'] = $this->boc_code;
     }
+
+    private function board_auth_check()
+    {
+        $conf = $this->conf;
+        $mem_level = 0;
+        if (isset($this->mem_info["mem_level"])) {
+            $mem_level = $this->mem_info["mem_level"];
+        }
+
+        // 게시판 관리자 체크 후 설정된 계정일 경우 관리자 권한주기
+        if (trim($conf["boc_manager"])) {
+            $mng = explode(",", $conf["boc_manager"]);
+            if (array_search($this->SS_MID, $mng) !== false) {
+                $mem_level = 99;
+                $this->isMaster = true; // 강제 관리자로 만들기
+            }
+        }
+
+        $auth = array(
+            "list"  => false,
+            "read"  => false,
+            "write" => false,
+            "reply" => false,
+        );
+
+        if ($conf["boc_auth_list"] <= $mem_level) $auth["list"] = true;
+        if ($conf["boc_auth_read"] <= $mem_level) $auth["read"] = true;
+        if ($conf["boc_auth_write"] <= $mem_level) $auth["write"] = true;
+        if ($conf["boc_auth_reply"] <= $mem_level) $auth["reply"] = true;
+
+        return $auth;
+    }
+
+
 }
