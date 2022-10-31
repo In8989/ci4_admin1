@@ -39,6 +39,10 @@ class BaseModel extends Model
         //  출력할 리스트 수
         $perPage = $option["perPage"] ?? 5;
 
+        // 정렬처리
+        if (isset($option["orderBy"])) $this->orderBy($option["orderBy"]);
+        else $this->orderBy($this->primaryKey . " desc");
+
         $this->where("$this->deletedField is null or $this->deletedField = ''");
 
         return [

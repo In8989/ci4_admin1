@@ -13,26 +13,31 @@
                 <div class="table-responsive text-nowrap">
                     <div class="row mb-5">
                         <?php
-                        for ($i = 0; $i < count($list); $i++) {
-                            $row = $list[$i];
-                            if (isset($bof_list[$row['bod_idx']])) {
-                                foreach ($bof_list[$row['bod_idx']] as $bof) { ?>
-                                    <div class="col-md-6 col-lg-4 mb-3">
-                                        <div class="card h-100">
-                                            <div class="card-body">
-                                                <h5 class="card-title"><?php echo $row['bod_title'] ?></h5>
-                                                <h6 class="card-subtitle text-muted"><?php echo $row['bod_writer_name'] ?></h6>
+                        for ($i = 0; $i < count($list); $i++) { ?>
+
+                            <div class="col-md-6 col-lg-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><?php echo $list[$i]['bod_title'] ?></h5>
+                                        <h6 class="card-subtitle text-muted"><?php echo $list[$i]['bod_writer_name'] ?></h6>
+                                        <?php
+                                        if (isset($bof_list[$list[$i]['bod_idx']])) {
+                                            foreach ($bof_list[$list[$i]['bod_idx']] as $bof) { ?>
                                                 <img class="img-fluid d-flex mx-auto my-4" src="/uploaded/file/<?php echo $bof['bof_file_save'] ?>" alt="Card image cap">
-                                                <p class="card-text"><?php echo $row['bod_content'] ?></p>
-                                                <a class="card-link" href="<?php echo $write_page ?>?idx=<?php echo $list[$i][$primaryKey] ?>"><i class="bx bx-edit-alt me-1"></i> Edit</a>
-                                                <a class="card-link" href="<?php echo $write_page ?>?idx=<?php echo $list[$i][$primaryKey] ?>"><i class="bx bx-trash me-1"></i> Delete</a>
-                                            </div>
-                                        </div>
+                                                <?php break;
+                                            }
+                                        } ?>
+                                        <p class="card-text"><?php echo $list[$i]['bod_content'] ?></p>
+                                        <a class="card-link" href="<?php echo $write_page ?>?idx=<?php echo $list[$i][$primaryKey] ?>"><i class="bx bx-edit-alt me-1"></i> Edit</a>
+                                        <a class="card-link" href="<?php echo $reply_page ?>?reply=1&idx=<?php echo $list[$i][$primaryKey] ?>"><i class="bx bx-edit-alt me-1"></i> Reply</a>
+                                        <a class="card-link" href="<?php echo $write_page ?>?idx=<?php echo $list[$i][$primaryKey] ?>"><i class="bx bx-trash me-1"></i> Delete</a>
                                     </div>
-                                    <?php break;
-                                }
-                            }
-                        } ?>
+                                </div>
+                            </div>
+
+                        <?php } ?>
+
+
                     </div>
                 </div>
             </div>

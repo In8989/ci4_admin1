@@ -33,7 +33,6 @@ class Login extends MasterController
             $rs = $this->model->getAuthMember($input);
 
             if ($rs['mem_pass'] == $input['mem_pass']) {
-                print_array($rs);
 
                 $session_data = array(
                     "MIDX"=>$rs["mem_idx"],

@@ -23,7 +23,30 @@
                             </div>
                             <div class="mb-3">
                                 <label for="bod_content" class="form-label">Content</label>
-                                <textarea class="form-control" id="bod_content" name="bod_content"><?php echo $bod_content ?></textarea>
+                                <?php if ($conf['boc_use_editor']) { ?>
+                                    <script type="text/javascript" src="/assets/plugins/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
+                                    <div id="smarteditor">
+                                        <textarea name="bod_content" id="bod_content" rows="20" cols="10" placeholder="내용을 입력해주세요" style="width: 100%"></textarea>
+                                    </div>
+                                    <script>
+                                        let oEditors = []
+
+                                        smartEditor = function() {
+                                            nhn.husky.EZCreator.createInIFrame({
+                                                oAppRef: oEditors,
+                                                elPlaceHolder: "bod_content",
+                                                sSkinURI: "/assets/plugins//smarteditor/SmartEditor2Skin.html",
+                                                fCreator: "createSEditor2"
+                                            })
+                                        }
+
+                                        $(document).ready(function() {
+                                            smartEditor()
+                                        })
+                                    </script>
+                                <?php } else { ?>
+                                    <textarea class="form-control" id="bod_content" name="bod_content"><?php echo $bod_content ?></textarea>
+                                <?php } ?>
                             </div>
 
                             <?php
