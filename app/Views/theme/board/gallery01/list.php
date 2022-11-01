@@ -29,7 +29,7 @@
                                         } ?>
                                         <p class="card-text"><?php echo $list[$i]['bod_content'] ?></p>
                                         <a class="card-link" href="<?php echo $write_page ?>?idx=<?php echo $list[$i][$primaryKey] ?>"><i class="bx bx-edit-alt me-1"></i> Edit</a>
-                                        <a class="card-link" href="<?php echo $reply_page ?>?reply=1&idx=<?php echo $list[$i][$primaryKey] ?>"><i class="bx bx-edit-alt me-1"></i> Reply</a>
+                                        <a class="card-link" href="<?php echo $reply_page ?>?idx=<?php echo $list[$i][$primaryKey] ?>"><i class="bx bx-edit-alt me-1"></i> Reply</a>
                                         <a class="card-link" href="<?php echo $write_page ?>?idx=<?php echo $list[$i][$primaryKey] ?>"><i class="bx bx-trash me-1"></i> Delete</a>
                                     </div>
                                 </div>

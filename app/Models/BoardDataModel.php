@@ -15,6 +15,9 @@ class BoardDataModel extends BaseModel
                                 'bod_deleted_id', 'bod_deleted_ip', 'bod_deleted_at'];
 
 
+
+
+
     /** 게시판 코드에 따른 사용 테이블 할당
      * @param $bod_code
      */

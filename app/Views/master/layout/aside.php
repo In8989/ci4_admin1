@@ -13,28 +13,28 @@
     <ul class="menu-inner py-1">
         <!-- Dashboard -->
         <li class="menu-item <?php if (url_is('master/main*')) echo 'active' ?>">
-            <a href="/master/main" class="menu-link">
+            <a href="/master/Main" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Dashboard</div>
             </a>
         </li>
 
         <li class="menu-item <?php if (url_is('master/member*')) echo 'active' ?>">
-            <a href="/master/member" class="menu-link">
+            <a href="/master/Member" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Member</div>
             </a>
         </li>
 
         <li class="menu-item <?php if (url_is('master/company*')) echo 'active' ?>">
-            <a href="/master/company" class="menu-link">
+            <a href="/master/Company" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Company</div>
             </a>
         </li>
 
         <li class="menu-item <?php if (url_is('master/boardconf*')) echo 'active' ?>">
-            <a href="/master/boardconf" class="menu-link">
+            <a href="/master/BoardConf" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Board Config</div>
             </a>

@@ -25,24 +25,36 @@
                                 <label for="bod_content" class="form-label">Content</label>
                                 <?php if ($conf['boc_use_editor']) { ?>
                                     <script type="text/javascript" src="/assets/plugins/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
+                                    <script>
+                                        function fnSmartEditorFilePathGet(){
+                                            return;
+                                        }
+                                    </script>
                                     <div id="smarteditor">
-                                        <textarea name="bod_content" id="bod_content" rows="20" cols="10" placeholder="내용을 입력해주세요" style="width: 100%"></textarea>
+                                        <textarea name="bod_content" id="bod_content" rows="20" cols="10" placeholder="내용을 입력해주세요" style="width: 100%"><?php echo $bod_content ?></textarea>
                                     </div>
                                     <script>
                                         let oEditors = []
+                                        let fieldName = 'bod_content';
 
-                                        smartEditor = function() {
-                                            nhn.husky.EZCreator.createInIFrame({
-                                                oAppRef: oEditors,
-                                                elPlaceHolder: "bod_content",
-                                                sSkinURI: "/assets/plugins//smarteditor/SmartEditor2Skin.html",
-                                                fCreator: "createSEditor2"
-                                            })
+                                        nhn.husky.EZCreator.createInIFrame({
+                                            oAppRef      : oEditors,
+                                            elPlaceHolder: fieldName,
+                                            sSkinURI     : "/assets/plugins//smarteditor/SmartEditor2Skin.html",
+                                            fCreator     : "createSEditor2",
+                                            fOnAppLoad   : function () {
+                                                oEditors.getById[fieldName].exec("PARSE_HTML", ["내용을 입력하세요."])
+                                            },
+                                        })
+
+                                        function click_submit(f) {
+                                            oEditors.getById[fieldName].exec("UPDATE_CONTENTS_FIELD", []);
+                                            return true;
                                         }
 
-                                        $(document).ready(function() {
-                                            smartEditor()
-                                        })
+                                        $('form').on('submit', function () {
+                                            click_submit(this);
+                                        });
                                     </script>
                                 <?php } else { ?>
                                     <textarea class="form-control" id="bod_content" name="bod_content"><?php echo $bod_content ?></textarea>
