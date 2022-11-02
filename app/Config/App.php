@@ -23,7 +23,7 @@ class App extends BaseConfig
 	 *
 	 * @var string
 	 */
-	public $baseURL = 'http://49.247.21.123/';
+	public $baseURL = BASE_URL; //  Check Constants.php
 
 	/**
 	 * --------------------------------------------------------------------------
