@@ -26,9 +26,7 @@
                                 <?php if ($conf['boc_use_editor']) { ?>
                                     <script type="text/javascript" src="/assets/plugins/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
                                     <script>
-                                        function fnSmartEditorFilePathGet(){
-                                            return;
-                                        }
+                                        function fnSmartEditorFilePathGet(){return;}
                                     </script>
 
                                     <div id="smarteditor">
@@ -42,7 +40,7 @@
                                         nhn.husky.EZCreator.createInIFrame({
                                             oAppRef      : oEditors,
                                             elPlaceHolder: fieldName,
-                                            sSkinURI     : "/assets/plugins//smarteditor/SmartEditor2Skin.html",
+                                            sSkinURI     : "/assets/plugins/smarteditor/SmartEditor2Skin.html",
                                             fCreator     : "createSEditor2",
                                             fOnAppLoad   : function () {
                                                 oEditors.getById[fieldName].exec("PARSE_HTML", ["내용을 입력하세요."])
@@ -72,6 +70,7 @@
                                         <div id="thumb_<?php echo $bof_list[$i]['bof_idx'] ?>">
                                             <img src="/uploaded/file/<?php echo $bof_list[$i]['bof_file_save'] ?>" width="100">
                                             <button type="button" onclick="fileDown('<?php echo $bof_list[$i]['bof_file_save'] ?>')">다운로드</button>
+
                                         </div>
                                     <?php }
                                     if ($i == $conf['boc_file_count']) echo "<br/>";

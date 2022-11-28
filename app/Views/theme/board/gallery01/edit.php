@@ -40,7 +40,7 @@
                                         nhn.husky.EZCreator.createInIFrame({
                                             oAppRef      : oEditors,
                                             elPlaceHolder: fieldName,
-                                            sSkinURI     : "/assets/plugins//smarteditor/SmartEditor2Skin.html",
+                                            sSkinURI     : "/assets/plugins/smarteditor/SmartEditor2Skin.html",
                                             fCreator     : "createSEditor2",
                                             fOnAppLoad   : function () {
                                                 oEditors.getById[fieldName].exec("PARSE_HTML", ["내용을 입력하세요."])

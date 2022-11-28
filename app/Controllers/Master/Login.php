@@ -6,7 +6,7 @@ use App\Controllers\Master\MasterController;
 
 class Login extends MasterController
 {
-    protected $models = ['MemberModel'];
+    protected $models = ['MemberModel','LogModel'];
     protected $viewPath = '/master/login';
 
     public function index()
@@ -23,10 +23,13 @@ class Login extends MasterController
         ]);
 
         if (!$validate) {   // Form 출력
+
             $this->useLayout = false;
             return $this->run($this->viewPath . '/login');
 
-        } else if ($this->request->getMethod() == 'post') {
+        }
+
+        if ($this->request->getMethod() === 'post') {
 
             $input = $this->request->getPost();
 
@@ -42,11 +45,14 @@ class Login extends MasterController
                 );
 
                 $this->session->set($session_data);
+                $this->LogModel->logLoginInsert($input);
+
                 return redirect()->to('/master');
 
-            } else {
-                alert("아이디 또는 비밀번호가 맞지 않습니다.");
             }
+
+            $this->LogModel->logLoginInsert($input,0);
+            alert("아이디 또는 비밀번호가 맞지 않습니다.");
 
         }
     }

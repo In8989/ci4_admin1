@@ -129,7 +129,6 @@ class BaseController extends Controller
     public function delete()
     {
         $idx = $this->request->getGet('idx');
-
         $this->model->del($idx);
 
         return redirect()->to($this->viewPath);

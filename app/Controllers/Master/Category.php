@@ -4,19 +4,16 @@ namespace App\Controllers\Master;
 
 use App\Controllers\Master\MasterController;
 
-class BoardConf extends MasterController
+class Category extends MasterController
 {
-    protected $models = ['BoardConfModel'];
-    protected $viewPath = '/master/boardconf';
+    protected $models = ['CategoryModel'];
+    protected $viewPath = '/master/category';
 
     public function index()
     {
-        /***    검색 기능 시작   ***/
-        if ($this->search_obj[1]) $this->model->like("boc_title", $this->search_obj[1]);
-        if ($this->search_obj[2]) $this->model->like("boc_code", $this->search_obj[2]);
-        /***    /검색 기능 끝   ***/
-
-        $pager = $this->model->getPager();
+        $option["perPage"] = 100;
+        $option['orderBy'] = "cat_group asc,cat_level asc,cat_sort asc";
+        $pager = $this->model->getPager($option);
 
         $data = [
             'list'        => $pager['list'],
@@ -25,19 +22,22 @@ class BoardConf extends MasterController
         ];
 
         return $this->run($this->viewPath . '/list', $data);
+
     }
 
     public function edit()
     {
         $validate = $this->validate([
-            'boc_code' => [
+            'cat_title' => [
                 'rules'  => 'required',
-                'errors' => ['required' => '이름을 입력해 주세요.'],
+                'errors' => ['required' => '제목을 입력해 주세요.'],
             ],
         ]);
 
+        $idx = $this->request->getGet('idx');
+        $mode = $this->request->getGet('mode');
+
         if (!$validate) {   // Form 출력
-            $idx = $this->request->getGet('idx') ?? '';
 
             if ($idx) {
                 if (!$data = $this->model->find($idx)) alert('데이터를 찾을 수 없습니다.');
@@ -46,20 +46,25 @@ class BoardConf extends MasterController
             }
 
             $data['idx'] = $idx;
+            $data['mode'] = $mode;
 
             return $this->run($this->viewPath . '/edit', $data);
 
-        } else if ($this->request->getMethod() == 'post') {
+        }
+
+        if ($this->request->getMethod() === 'post') {
             $input = $this->request->getPost();
 
+            $input['cat_group'] = $input['cat_group'] ?? $this->model->getNextGroupNum();
+            $input['cat_level'] = $mode ? 2 : 1;
+            $input['cat_sort'] = $this->model->getNextSort($input);
+
             if ($this->model->edit($input)) {
-                $this->model->boardTableCreate($input);
                 return redirect()->to($this->viewPath);
-            } else {
-                alert("오류가 발생하였습니다.");
             }
+
+            alert("오류가 발생하였습니다.");
         }
 
     }
-
 }

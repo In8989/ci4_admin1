@@ -39,14 +39,6 @@
 <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
 <script src="/assets/js/config.js"></script>
 
-<!-- BEGIN CORE CSS FRAMEWORK -->
-<link href="/assets/webarch/css/webarch.css" rel="stylesheet" type="text/css" />
-<!-- END CORE CSS FRAMEWORK -->
-<!-- BEGIN CORE TEMPLATE JS -->
-<script src="/assets/webarch/js/webarch.js" type="text/javascript"></script>
-<!-- END CORE TEMPLATE JS -->
-
-
 <!-- Core JS -->
 <!-- build:js assets/vendor/js/core.js -->
 <script src="/assets/vendor/libs/jquery/jquery.js"></script>
@@ -67,3 +59,5 @@
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 
 <script src="/assets/plugins/jquery-3.6.1.min.js"></script>
+
+<script src="/assets/js/common.js"></script>

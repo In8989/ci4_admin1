@@ -13,7 +13,9 @@ use App\Controllers\BaseController;
  */
 function isDev()
 {
-    if ($_SERVER["REMOTE_ADDR"] == "106.240.173.254" || $_SERVER["REMOTE_ADDR"] == "::1" || $_SERVER["REMOTE_ADDR"] == "127.0.0.1") return true;
+    $ip = array("59.22.30.103", "106.240.173.254");
+
+    if (in_array($_SERVER["REMOTE_ADDR"], $ip)) return true;
     else return false;
 }
 
@@ -31,7 +33,7 @@ function echoDev($str)
  * 배열을 보기(확인)좋게 출력
  * @param $arr 배열
  */
-function print_array($arr)
+function print_r2($arr)
 {
     if (!isDev()) return;
     echo "<xmp>";

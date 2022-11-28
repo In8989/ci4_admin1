@@ -84,7 +84,7 @@ Class KakaoAllim {
         /*
         echo $this->message . "<Br>";
         echo $this->user_template_no . "<Br>";
-        print_array($this->receiver);
+        print_r2($this->receiver);
         die("Check");
         */
 

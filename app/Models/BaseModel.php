@@ -37,7 +37,7 @@ class BaseModel extends Model
     public function getPager($option = array())
     {
         //  출력할 리스트 수
-        $perPage = $option["perPage"] ?? 5;
+        $perPage = $option["perPage"] ?? 10;
 
         // 정렬처리
         if (isset($option["orderBy"])) $this->orderBy($option["orderBy"]);

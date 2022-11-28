@@ -13,30 +13,44 @@
     <ul class="menu-inner py-1">
         <!-- Dashboard -->
         <li class="menu-item <?php if (url_is('master/main*')) echo 'active' ?>">
-            <a href="/master/Main" class="menu-link">
+            <a href="/master/main" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Dashboard</div>
             </a>
         </li>
 
         <li class="menu-item <?php if (url_is('master/member*')) echo 'active' ?>">
-            <a href="/master/Member" class="menu-link">
+            <a href="/master/member" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Member</div>
             </a>
         </li>
 
         <li class="menu-item <?php if (url_is('master/company*')) echo 'active' ?>">
-            <a href="/master/Company" class="menu-link">
+            <a href="/master/company" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Company</div>
             </a>
         </li>
 
         <li class="menu-item <?php if (url_is('master/boardconf*')) echo 'active' ?>">
-            <a href="/master/BoardConf" class="menu-link">
+            <a href="/master/boardconf" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Board Config</div>
+            </a>
+        </li>
+
+        <li class="menu-item <?php if (url_is('master/category*')) echo 'active' ?>">
+            <a href="/master/category" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                <div data-i18n="Analytics">Category</div>
+            </a>
+        </li>
+
+        <li class="menu-item <?php if (url_is('master/product*')) echo 'active' ?>">
+            <a href="/master/product" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                <div data-i18n="Analytics">Product</div>
             </a>
         </li>
 

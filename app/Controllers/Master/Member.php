@@ -39,7 +39,7 @@ class Member extends MasterController
         ]);
 
         if (!$validate) {   // Form 출력
-            $idx = $this->request->getGet('idx') ?? '';
+            $idx = $this->request->getGet('idx');
 
             if ($idx) {
                 if (!$data = $this->model->find($idx)) alert('데이터를 찾을 수 없습니다.');
@@ -51,7 +51,9 @@ class Member extends MasterController
 
             return $this->run($this->viewPath . '/edit', $data);
 
-        } else if ($this->request->getMethod() == 'post') {
+        }
+
+        if ($this->request->getMethod() === 'post') {
             $input = $this->request->getPost();
 
             $uploader = new Uploader();
@@ -82,9 +84,9 @@ class Member extends MasterController
                 $uploader->file_del($ready_to_del);
 
                 return redirect()->to($this->viewPath);
-            } else {
-                alert("오류가 발생하였습니다.");
             }
+
+            alert("오류가 발생하였습니다.");
         }
 
     }
