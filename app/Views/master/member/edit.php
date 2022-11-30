@@ -87,7 +87,7 @@
             url     : '<?php echo $currentURL; ?>/del_file',
             data    : {'idx': <?php echo $idx ?>, 'column': column},
             success : function (data) {
-                if (data['result'] === 'ok') {
+                if (data['success'] === 'ok') {
                     alert('파일이 삭제되었습니다.');
                     //  이미지 영역 삭제처리
                     $('#thumb_'+num).remove();

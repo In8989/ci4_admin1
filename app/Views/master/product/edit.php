@@ -1,3 +1,54 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        categoryInit();
+        categorySetting('prd_cat_idx');
+    });
+
+    function categoryInit() {
+        const prd_cat_idx2 = '<?= $prd_cat_idx2 ?>';
+        if (!prd_cat_idx2) return;
+
+        const box1 = '#prd_cat_idx1';
+        const box2 = '#prd_cat_idx2';
+
+        let box1_group = $(box1).find("option:selected").attr('data-cat-group');
+        let html = "<option>카테고리를 선택해주세요.</option>";
+
+        $.ajax({
+            type    : 'POST',
+            dataType: 'JSON',
+            url     : '/master/product/categoryChildGet',
+            data    : {'cat_group': box1_group},
+            success : function (data) {
+                if (data['success'] === 'ok') {
+                    const cate2 = data['result'];
+                    if (cate2.length > 0) {
+                        cate2.forEach(function (item) {
+                            let selected = prd_cat_idx2 === item.cat_idx ? 'selected' : '';
+                            html += "<option value='" + item.cat_idx + "' " + selected + ">" + item.cat_title + "</option>"
+                        });
+                        $(box2).parent().css('display', 'block');
+
+                    } else {
+                        $(box2).parent().css('display', 'none');
+                    }
+
+                    $(box2 + ' option').remove();
+                    $(box2).append(html);
+                }
+
+            },
+            error   : function (xhr, ajaxOptions, thrownError) {
+                console.log(xhr);
+                console.log(thrownError);
+            }
+        });
+
+
+    }
+</script>
+
 <!-- Content -->
 <div class="layout-page">
     <div class="container-xxl">
@@ -15,49 +66,22 @@
                         <form method="POST" enctype="multipart/form-data" id="formAuthentication" class="mb-3">
                             <input type="hidden" name="<?php echo $primaryKey ?>" id="<?php echo $primaryKey ?>" value="<?php echo $idx ?>">
 
-
-                            <script type="text/javascript">
-                                $(document).ready(function () {
-                                    // 카테고리 1 의 선택에 따라 카테고리 2 만들기
-                                    $('#prd_cat_idx1').change(function () {
-                                        let prd_cat_idx1 = $(this).val();
-                                        let select_prd_group = $(this).find("option:selected").attr('data-cat-group');
-
-                                        let cate2 = <?php echo json_encode($cate2) ?>;
-
-                                        let html = "<option>카테고리를 선택해주세요.</option>";
-
-                                        if (cate2[select_prd_group]) {
-                                            cate2[select_prd_group].forEach(function (item) {
-                                                html += "<option value='"+ item.cat_idx +"'>" + item.cat_title + "</option>"
-                                            });
-                                            $('#cat2_box').css('display', 'block');
-                                        } else {
-                                            $('#cat2_box').css('display', 'none');
-                                        }
-
-                                        $('#prd_cat_idx2 option').remove();
-                                        $('#prd_cat_idx2').append(html);
-
-                                    });
-                                });
-                            </script>
-
                             <div class="mb-3">
                                 <label for="prd_cat_idx1" class="form-label">카테고리1</label>
                                 <select name="prd_cat_idx1" id="prd_cat_idx1">
                                     <option>카테고리를 선택해주세요.</option>
-                                    <?php for ($i = 0; $i < count($cate1); $i++) {
-                                        echo "<option value='{$cate1[$i]['cat_idx']}' data-cat-group='{$cate1[$i]['cat_group']}'>{$cate1[$i]['cat_title']}</option>";
+                                    <?php foreach ($cate1 as $iValue) {
+                                        $selected = $prd_cat_idx1 === $iValue['cat_idx'] ? 'selected' : '';
+                                        echo "<option value='{$iValue['cat_idx']}' data-cat-group='{$iValue['cat_group']}' {$selected}>{$iValue['cat_title']}</option>";
                                     } ?>
                                 </select>
                             </div>
 
                             <div class="mb-3" id="cat2_box" style="display: none;">
                                 <label for="prd_cat_idx2" class="form-label">카테고리2</label>
-                                <select name="prd_cat_idx2" id="prd_cat_idx2">
-                                </select>
+                                <select name="prd_cat_idx2" id="prd_cat_idx2"></select>
                             </div>
+
 
                             <div class="mb-3">
                                 <label class="form-label">제목</label>
@@ -100,7 +124,9 @@
                                 <label for="prd_content" class="form-label">내용</label>
                                 <script type="text/javascript" src="/assets/plugins/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
                                 <script>
-                                    function fnSmartEditorFilePathGet(){return;}
+                                    function fnSmartEditorFilePathGet() {
+                                        return;
+                                    }
                                 </script>
 
                                 <div id="smarteditor">
@@ -120,15 +146,18 @@
                                             oEditors.getById[fieldName].exec("PARSE_HTML", ["내용을 입력하세요."])
                                         },
                                     })
-
+                                    /*
                                     function click_submit(f) {
+                                        //let len = oEditors.length;
+                                        //for(k=0;k<len;k++)oEditors[k].exec("UPDATE_CONTENTS_FIELD", []);
+
                                         oEditors.getById[fieldName].exec("UPDATE_CONTENTS_FIELD", []);
                                         return true;
                                     }
 
                                     $('form').on('submit', function () {
                                         click_submit(this);
-                                    });
+                                    });*/
                                 </script>
                             </div>
 

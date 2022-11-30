@@ -108,7 +108,7 @@ class Member extends MasterController
 
             $this->model->edit($set);
 
-            $json['result'] = 'ok';
+            $json['success'] = 'ok';
 
             die(json_encode($json));
 

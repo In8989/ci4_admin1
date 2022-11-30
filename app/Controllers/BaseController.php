@@ -49,6 +49,8 @@ class BaseController extends Controller
     protected $mem_session; //-- 세션 변수
     protected $isLogin = false; //-- 로그인 관련 변수
 
+    public $THEME;   //-- 기본 경로
+
     /**
      * Constructor.
      *
@@ -68,6 +70,7 @@ class BaseController extends Controller
         // Preload any models, libraries, etc, here.
         //--------------------------------------------------------------------
         // E.g.: $this->session = \Config\Services::session();
+
 
         // 공통 사용 라이브러리 생성
         $this->session = \Config\Services::session();
@@ -96,21 +99,26 @@ class BaseController extends Controller
 
         if ($this->mem_session['MIDX']) $this->isLogin = true;
 
+        // 사이트 주소, 스킨
+        $this->THEME = 'theme';
+
+        $this->accessLogData();
+
     }
 
     public function run($path, $params = array())
     {
         $this->addCommonData($params);
 
-        $data['head'] = view('master/layout/head');
+        $data['head'] = view("{$this->THEME}/layout/head");
         if (!$this->useLayout) { //  레이아웃 미사용 시 출력
             return view($path, $data);
         }
-        $data['aside'] = view('master/layout/aside');
-        $data['footer'] = view('master/layout/footer');
+        $data['aside'] = view("{$this->THEME}/layout/aside");
+        $data['footer'] = view("{$this->THEME}/layout/footer");
         $data['content'] = view($path, $params);
 
-        return view("master/layout/layout", $data);
+        return view("{$this->THEME}/layout/layout", $data);
     }
 
     /**
@@ -134,7 +142,9 @@ class BaseController extends Controller
         return redirect()->to($this->viewPath);
     }
 
-    // 데이터에 추가하기 설명 추가하기
+    /*
+     * 데이터 추가 ( += )
+     */
     public function addCommonData(&$data)
     {
         $data['currentURL'] = $this->getControllerUrl();
@@ -144,6 +154,29 @@ class BaseController extends Controller
             if (isset($_GET["search_obj{$i}"])) $data["search_obj{$i}"] = $_GET["search_obj{$i}"];
             else $data["search_obj{$i}"] = "";
         }
+
+    }
+
+    /*
+     * 접속 로그 남기기
+     */
+    private function accessLogData()
+    {
+        if ($this->session->get("log_idx")) return;
+
+        $request = \Config\Services::request();
+        $agent = $request->getUserAgent();
+        $LogModel = model('App\Models\LogModel');
+
+        $set['is_robot'] = $agent->getRobot();
+        $set['is_mobile'] = $agent->getMobile();
+        $set['browser'] = $agent->getBrowser();
+        $set['browser_ver'] = $agent->getVersion();
+        $set['platform'] = $agent->getPlatform();
+        $set['refer'] = $agent->getReferrer();
+
+        $log_idx = $LogModel->logAccessInsert($set);
+        $this->session->set('log_idx', $log_idx);
 
     }
 

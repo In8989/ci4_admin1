@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controllers\Master;
+
 use App\Controllers\Master\MasterController;
 
 class Product extends MasterController
@@ -43,19 +44,7 @@ class Product extends MasterController
             }
 
             // 카테고리 정보 가져오기
-            $cat_list = $this->CategoryModel->orderBy('cat_group ASC, cat_sort ASC')->get()->getResultArray();
-
-            $cate1 = array();
-            $cate2 = array();
-            foreach ($cat_list as $key => $row) {
-                if ($row['cat_level'] === '1') {
-                    $cate1[] = $row;
-                } else {
-                    $cate2[$row['cat_group']][] = $row;
-                }
-            }
-            $data['cate1'] = $cate1;
-            $data['cate2'] = $cate2;
+            $data['cate1'] = $this->CategoryModel->orderBy('cat_group ASC, cat_sort ASC')->getWHERE(['cat_level' => 1])->getResultArray();
 
             $data['idx'] = $idx;
             $data['mode'] = $mode;
@@ -74,4 +63,16 @@ class Product extends MasterController
             alert("오류가 발생하였습니다.");
         }
     }
+
+    public function categoryChildGet()
+    {   $input = $this->request->getPost();
+
+        // 카테고리 정보 가져오기
+        $cat_list = $this->CategoryModel->orderBy('cat_group ASC, cat_sort ASC')->getWhere(['cat_group' => $input['cat_group'], 'cat_level >' => 1])->getResultArray();
+
+        $json['success'] = 'ok';
+        $json['result'] = $cat_list;
+        die(json_encode($json));
+    }
+
 }

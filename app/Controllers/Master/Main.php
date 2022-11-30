@@ -8,9 +8,7 @@ class Main extends MasterController
 {
     public function index()
     {
-
         return $this->run('master/main');
-
     }
 
 }

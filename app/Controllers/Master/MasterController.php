@@ -28,6 +28,27 @@ class MasterController extends BaseController
                 alert('로그인하세요.','/master/login');
             }
         }
+
+        // 사이트 주소, 스킨
+        $this->THEME = 'master';
+
+        $this->adminLogData();
+    }
+
+    /*
+     * 관리자 기록 남기기
+     */
+    private function adminLogData()
+    {
+        $request = \Config\Services::request();
+        $agent = $request->getUserAgent();
+        $LogModel = model('App\Models\LogModel');
+
+        //$set['is_robot'] = $agent->getRobot();
+
+        //$log_idx = $LogModel->logAdminInsert($set);
+
+
     }
 
 }

@@ -37,14 +37,14 @@
                             <div class="mb-3">
                                 <label class="form-label">상태</label>
                                 <div>
-                                    <input type="radio" class="form-check-input" id="cat_state_1" name="cat_state" value="1" />
+                                    <input type="radio" class="form-check-input" id="cat_state_1" name="cat_state" value="1" <?php if ($cat_state === '1') echo 'checked'; ?> />
                                     <label for="cat_state_1">사용</label>
-                                    <input type="radio" class="form-check-input" id="cat_state_0" name="cat_state" value="0" />
+                                    <input type="radio" class="form-check-input" id="cat_state_0" name="cat_state" value="0" <?php if ($cat_state === '0') echo 'checked'; ?> />
                                     <label for="cat_state_0">사용안함</label>
                                 </div>
                             </div>
 
-                            <?php if ($idx) { ?>
+                            <?php if ($idx && $mode !== 'addChild') { ?>
                                 <div class="mb-3">
                                     <label class="form-label">순서</label>
                                     <div>

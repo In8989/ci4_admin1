@@ -55,9 +55,13 @@ class Category extends MasterController
         if ($this->request->getMethod() === 'post') {
             $input = $this->request->getPost();
 
-            $input['cat_group'] = $input['cat_group'] ?? $this->model->getNextGroupNum();
-            $input['cat_level'] = $mode ? 2 : 1;
-            $input['cat_sort'] = $this->model->getNextSort($input);
+            if ($mode === 'addChild') $input['cat_idx'] = '';
+
+            if (!$input['cat_idx']) {
+                $input['cat_group'] = $input['cat_group'] ?? $this->model->getNextGroupNum();
+                $input['cat_level'] = $mode ? 2 : 1;
+                $input['cat_sort'] = $this->model->getNextSort($input);
+            }
 
             if ($this->model->edit($input)) {
                 return redirect()->to($this->viewPath);

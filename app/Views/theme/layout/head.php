@@ -1,7 +1,3 @@
-<?php
-$ver = '1';
-?>
-
 <meta charset="utf-8" />
 <meta
         name="viewport"
@@ -64,4 +60,4 @@ $ver = '1';
 
 <script src="/assets/plugins/jquery-3.6.1.min.js"></script>
 
-<script src="/assets/js/common.js?ver=<?php echo $ver?>"></script>
+<script src="/assets/js/common.js"></script>
